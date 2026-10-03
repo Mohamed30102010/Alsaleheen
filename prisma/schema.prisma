@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderType {
+  DELIVERY
+  PICKUP
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  OUT_FOR_DELIVERY
+  COMPLETED
+  CANCELLED
+}
+
+model Category {
+  id     String     @id @default(cuid())
+  nameAr String
+  nameEn String
+  sort   Int        @default(0)
+  active Boolean    @default(true)
+  items  MenuItem[]
+}
+
+model MenuItem {
+  id         String      @id @default(cuid())
+  categoryId String
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  nameAr     String
+  nameEn     String
+  descAr     String      @default("")
+  descEn     String      @default("")
+  price      Int
+  imageUrl   String?
+  tags       String[]
+  extras     Json        @default("[]")
+  available  Boolean     @default(true)
+  featured   Boolean     @default(false)
+  sort       Int         @default(0)
+  createdAt  DateTime    @default(now())
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+}
+
+model Customer {
+  id     String  @id @default(cuid())
+  name   String
+  phone  String  @unique
+  orders Order[]
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  number      Int         @unique @default(autoincrement())
+  customerId  String
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  type        OrderType
+  status      OrderStatus @default(PENDING)
+  address     String?
+  notes       String?
+  subtotal    Int
+  deliveryFee Int         @default(0)
+  total       Int
+  locale      String      @default("ar")
+  createdAt   DateTime    @default(now())
+  items       OrderItem[]
+
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id         String    @id @default(cuid())
+  orderId    String
+  order      Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId String?
+  menuItem   MenuItem? @relation(fields: [menuItemId], references: [id], onDelete: SetNull)
+  nameAr     String
+  nameEn     String
+  unitPrice  Int
+  qty        Int
+  extras     Json      @default("[]")
+}
+
+model Review {
+  id       String  @id @default(cuid())
+  name     String
+  rating   Int
+  textAr   String
+  textEn   String  @default("")
+  date     String?
+  isSample Boolean @default(false)
+  visible  Boolean @default(true)
+  sort     Int     @default(0)
+}
+
+model GalleryImage {
+  id    String @id @default(cuid())
+  url   String
+  altAr String @default("")
+  altEn String @default("")
+  sort  Int    @default(0)
+}
+
+model Settings {
+  id              Int      @id @default(1)
+  nameAr          String   @default("مطعم الصالحين")
+  nameEn          String   @default("Al Saleheen Restaurant")
+  taglineAr       String   @default("")
+  taglineEn       String   @default("")
+  descAr          String   @default("")
+  descEn          String   @default("")
+  phone           String   @default("")
+  whatsapp        String   @default("")
+  addressAr       String   @default("")
+  addressEn       String   @default("")
+  mapEmbedUrl     String   @default("")
+  mapsLink        String   @default("")
+  lat             Float?
+  lng             Float?
+  hoursAr         String   @default("")
+  hoursEn         String   @default("")
+  openingSpec     String   @default("")
+  facebook        String   @default("")
+  instagram       String   @default("")
+  tiktok          String   @default("")
+  logoUrl         String   @default("")
+  heroImageUrl    String   @default("")
+  storyJson       Json     @default("[]")
+  deliveryEnabled Boolean  @default(true)
+  pickupEnabled   Boolean  @default(true)
+  deliveryFee     Int      @default(0)
+  minOrder        Int      @default(0)
+  isDemo          Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
