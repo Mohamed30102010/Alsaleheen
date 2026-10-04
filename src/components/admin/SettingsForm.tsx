@@ -29,7 +29,7 @@ export default function SettingsForm() {
     let story: unknown;
     try { story = JSON.parse(s.storyJson); } catch { setMsg("صيغة JSON في حقل الحكاية غير صحيحة."); return; }
     setBusy(true); setMsg("");
-    const body = { ...s, storyJson: story, lat: s.lat === "" ? null : Number(s.lat), lng: s.lng === "" ? null : Number(s.lng) };
+    const body: Record<string, unknown> = { ...s, storyJson: story, lat: s.lat === "" ? null : Number(s.lat), lng: s.lng === "" ? null : Number(s.lng) };
     delete body.id; delete body.updatedAt;
     try {
       const r = await fetch("/api/admin/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
