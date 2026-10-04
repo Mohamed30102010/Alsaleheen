@@ -6,6 +6,7 @@ import CartProvider from "@/components/CartProvider";
 import Header from "@/components/Header";
 import ItemModal from "@/components/ItemModal";
 import CartDrawer from "@/components/CartDrawer";
+import BgVideo from "@/components/BgVideo";
 import { getDict } from "@/lib/i18n";
 import { getSiteData } from "@/lib/data";
 import { LOCALES, pick, type Locale } from "@/lib/types";
@@ -43,7 +44,8 @@ export default async function RootLayout({ children, params }: { children: React
   const t = getDict(locale);
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={`${display.variable} ${body.variable} ${latin.variable}`}>
-      <body>
+      <body className="vid">
+        <BgVideo />
         <noscript><style>{`.rv,.rh{opacity:1!important;transform:none!important}`}</style></noscript>
         <a href="#menu" className="skip">{t.skip}</a>
         <CartProvider locale={locale} settings={settings}>
