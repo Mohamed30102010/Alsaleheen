@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import Crud, { type Field } from "./Crud";
 import Orders from "./Orders";
 import SettingsForm from "./SettingsForm";
+import AccountForm from "./AccountForm";
 
-const TABS = [["orders", "الطلبات"], ["items", "المنيو"], ["categories", "الأقسام"], ["reviews", "الآراء"], ["gallery", "المعرض"], ["settings", "الإعدادات"]] as const;
+const TABS = [["orders", "الطلبات"], ["items", "المنيو"], ["categories", "الأقسام"], ["reviews", "الآراء"], ["gallery", "المعرض"], ["settings", "الإعدادات"]] as const;const TABS = [["orders", "الطلبات"], ["items", "المنيو"], ["categories", "الأقسام"], ["reviews", "الآراء"], ["gallery", "المعرض"], ["settings", "الإعدادات"], ["account", "الحساب"]] as const;
 
 const CAT_F: Field[] = [{ k: "nameAr", label: "اسم القسم (عربي)", t: "text" }, { k: "nameEn", label: "Name (English)", t: "text" }, { k: "sort", label: "الترتيب (رقم أصغر = أولًا)", t: "num" }, { k: "active", label: "ظاهر في الموقع", t: "bool", def: true }];
 const ITEM_F: Field[] = [
@@ -32,6 +33,7 @@ export default function AdminApp() {
         {tab === "reviews" && <Crud key="rev" resource="reviews" title="الآراء" fields={REV_F} titleOf={(r) => `${r.name} · ${"★".repeat(r.rating)}`} />}
         {tab === "gallery" && <Crud key="gal" resource="gallery" title="المعرض" fields={GAL_F} titleOf={(r) => r.altAr || r.url.slice(-30)} />}
         {tab === "settings" && <SettingsForm />}
+        {tab === "account" && <AccountForm />}
       </main>
     </div>
   );
